@@ -1,12 +1,17 @@
 GitHub Pages アップロード手順
 
-1. このZIPを解凍する
-2. 中にある index.html / 404.html / .nojekyll / .gitignore / UPLOAD_GUIDE.txt をGitHubリポジトリの直下にアップロードする
-3. Settings → Pages → Deploy from a branch を選ぶ
-4. Branch: main / Folder: /root にする
+1. このZIPを解凍します。
+2. GitHubリポジトリの中身を必要に応じて整理します。
+   ※ 同じ名前の index.html / 404.html は上書きされます。
+   ※ ただし、古い .env や assets フォルダは自動では消えません。不要ならGitHub上で削除してください。
+3. このフォルダ内の以下をアップロードします。
+   - index.html
+   - 404.html
+   - .nojekyll
+   - .gitignore
+4. Settings → Pages → Deploy from a branch → main / root に設定します。
 
-注意
-- ZIPそのものではなく、解凍した中身をアップロードしてください。
-- .env は入れていません。
-- assets フォルダは不要です。
-- 以前アップロードした .env や assets フォルダは自動では消えないので、不要ならGitHub上で削除してください。
+安全化内容:
+- .env は含めていません。
+- assets フォルダなしで動くように、CSS/JSを index.html にまとめています。
+- Firebase Web公開設定はビルド済みJSに含まれるため、Firebase Rulesを適切に設定してください。
