@@ -1,0 +1,1 @@
+assetsフォルダ不要版です。GitHubには index.html / 404.html / .nojekyll をアップロードしてください。
