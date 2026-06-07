@@ -209,7 +209,7 @@ Total Duration: ${c-l}ms`),H.resolve({didRun:!0,sequenceNumbersCollected:r,targe
   :root {
     --oriex6-safe-bottom: env(safe-area-inset-bottom, 0px);
     --oriex6-tab-bottom: max(8px, var(--oriex6-safe-bottom));
-    --oriex6-page-bottom: calc(76px + var(--oriex6-tab-bottom));
+    --oriex6-page-bottom: calc(70px + var(--oriex6-tab-bottom));
   }
 
   html,
@@ -221,6 +221,10 @@ Total Duration: ${c-l}ms`),H.resolve({didRun:!0,sequenceNumbersCollected:r,targe
     margin: 0;
     background: #FBF8F3;
     overflow: hidden;
+  }
+
+  #root {
+    background: inherit;
   }
 
   @supports (height: 100dvh) {
@@ -269,15 +273,8 @@ Total Duration: ${c-l}ms`),H.resolve({didRun:!0,sequenceNumbersCollected:r,targe
   }
 
   #root > div[style*="position: fixed"]::after {
-    content: "";
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: calc(var(--oriex6-safe-bottom) + 96px);
-    background: inherit;
-    pointer-events: none;
-    z-index: 0;
+    content: none !important;
+    display: none !important;
   }
 
   #root > div[style*="max-width"] {
@@ -320,7 +317,7 @@ Total Duration: ${c-l}ms`),H.resolve({didRun:!0,sequenceNumbersCollected:r,targe
   @media (display-mode: standalone) {
     :root {
       --oriex6-tab-bottom: max(3px, calc(env(safe-area-inset-bottom, 0px) - 30px));
-      --oriex6-page-bottom: calc(70px + var(--oriex6-tab-bottom));
+      --oriex6-page-bottom: calc(66px + var(--oriex6-tab-bottom));
     }
 
     html,
