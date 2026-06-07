@@ -1,14 +1,16 @@
 GitHub Pages アップロード手順
 
 1. このZIPを解凍する
-2. GitHubリポジトリで Add file → Upload files を押す
-3. index.html / 404.html / .nojekyll / .gitignore / UPLOAD_GUIDE.txt をアップロードする
-4. Commit changes を押す
-5. Settings → Pages → Deploy from a branch → main / root にする
+2. 中のファイルをGitHubリポジトリ直下にアップロードする
+   - index.html
+   - 404.html
+   - .nojekyll
+   - .gitignore
+3. Settings → Pages → Deploy from a branch
+4. Branch: main / Folder: /root に設定
 
-注意
-- ZIPそのものではなく、解凍した中身をアップロードしてください。
+注意:
+- ZIPファイルそのものではなく、解凍した中身をアップロードしてください。
 - .env は入れていません。
 - assets フォルダは不要です。
-- 同じ名前の index.html や 404.html は、GitHub上で変更として扱われ、Commitすると上書きされます。
-- ただし、前にアップロード済みの assets フォルダなど、今回ZIPに入っていない古いファイルは自動では消えません。使われないだけですが、整理したい場合はGitHub上で削除してください。
+- 以前のリポジトリに .env や assets が残っている場合は、不要ならGitHub上で削除してください。
