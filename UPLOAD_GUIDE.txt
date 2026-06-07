@@ -1,0 +1,15 @@
+GitHub Pages upload guide
+
+Upload these files to the repository root:
+- index.html
+- 404.html
+- .nojekyll
+- .gitignore
+
+Do NOT upload .env.
+Do NOT upload API keys such as OpenAI/Gemini/Claude secrets.
+
+GitHub Pages settings:
+Settings -> Pages -> Deploy from a branch -> main -> /root
+
+This package is a single-file build, so there is no assets folder to upload.
