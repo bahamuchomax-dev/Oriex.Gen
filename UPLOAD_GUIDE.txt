@@ -1,19 +1,14 @@
 GitHub Pages アップロード手順
 
 1. このZIPを解凍する
-2. 中にあるファイルをすべてGitHubリポジトリへアップロードする
-   - index.html
-   - 404.html
-   - .nojekyll
-   - .gitignore
-   - UPLOAD_GUIDE.txt
-3. GitHub の Settings → Pages を開く
-4. Source を「Deploy from a branch」にする
-5. Branch を「main」、Folder を「/root」にする
-6. Save を押す
+2. GitHubリポジトリで Add file → Upload files を押す
+3. index.html / 404.html / .nojekyll / .gitignore / UPLOAD_GUIDE.txt をアップロードする
+4. Commit changes を押す
+5. Settings → Pages → Deploy from a branch → main / root にする
 
 注意
+- ZIPそのものではなく、解凍した中身をアップロードしてください。
 - .env は入れていません。
 - assets フォルダは不要です。
-- ZIPファイル自体ではなく、解凍した中身をアップロードしてください。
-- FirebaseのWeb公開設定はビルド済みJSに含まれます。FirestoreのSecurity Rulesは必ず確認してください。
+- 同じ名前の index.html や 404.html は、GitHub上で変更として扱われ、Commitすると上書きされます。
+- ただし、前にアップロード済みの assets フォルダなど、今回ZIPに入っていない古いファイルは自動では消えません。使われないだけですが、整理したい場合はGitHub上で削除してください。
