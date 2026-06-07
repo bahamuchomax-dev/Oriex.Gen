@@ -314,6 +314,20 @@ Total Duration: ${c-l}ms`),H.resolve({didRun:!0,sequenceNumbersCollected:r,targe
     bottom: var(--oriex6-tab-bottom) !important;
   }
 
+  main:has(.rx-home) {
+    max-height: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    padding-bottom: 0 !important;
+  }
+
+  main:has(.rx-home) > .rx-home {
+    flex: 1 1 auto;
+    height: 100% !important;
+    max-height: none !important;
+  }
+
   @media (display-mode: standalone) {
     :root {
       --oriex6-tab-bottom: max(3px, calc(env(safe-area-inset-bottom, 0px) - 30px));
@@ -330,5 +344,445 @@ Total Duration: ${c-l}ms`),H.resolve({didRun:!0,sequenceNumbersCollected:r,targe
   </head>
   <body>
     <div id="root"></div>
+    <style id="oriex6-attendance-stamp-style">
+      .oriex-attendance-home-button,
+      .oriex-attendance-record-card {
+        border: 1px solid rgba(255, 112, 84, 0.22);
+        background: rgba(255, 255, 255, 0.92);
+        color: #2b2724;
+        box-shadow: 0 12px 30px rgba(43, 39, 36, 0.10);
+        font-family: "Zen Maru Gothic", "Zen Kaku Gothic New", sans-serif;
+      }
+
+      .oriex-attendance-home-button {
+        width: 100%;
+        border-radius: 20px;
+        margin: 0 0 22px;
+        padding: 15px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        cursor: pointer;
+      }
+
+      .oriex-attendance-home-button .oriex-left,
+      .oriex-attendance-record-card .oriex-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .oriex-attendance-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        flex: none;
+        background: #fff1ec;
+        color: #ff7054;
+        font-size: 22px;
+      }
+
+      .oriex-attendance-home-button b,
+      .oriex-attendance-record-card b {
+        display: block;
+        font-size: 16px;
+        line-height: 1.2;
+        font-weight: 900;
+      }
+
+      .oriex-attendance-home-button small,
+      .oriex-attendance-record-card small {
+        display: block;
+        margin-top: 3px;
+        color: rgba(43, 39, 36, 0.48);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .oriex-attendance-record-card {
+        width: 100%;
+        border-radius: 22px;
+        margin: 2px 0 16px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        cursor: pointer;
+      }
+
+      .oriex-attendance-chevron {
+        color: #ff7054;
+        font-size: 26px;
+        line-height: 1;
+        font-weight: 900;
+        flex: none;
+      }
+
+      .oriex-attendance-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+        display: grid;
+        place-items: end center;
+        padding: 18px 18px calc(env(safe-area-inset-bottom, 0px) + 18px);
+        background: rgba(43, 39, 36, 0.18);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+      }
+
+      .oriex-attendance-modal {
+        width: min(430px, 100%);
+        max-height: min(82vh, 720px);
+        overflow: hidden;
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid rgba(43, 39, 36, 0.08);
+        box-shadow: 0 24px 60px rgba(43, 39, 36, 0.24);
+        font-family: "Zen Maru Gothic", "Zen Kaku Gothic New", sans-serif;
+        color: #2b2724;
+        animation: oriexStampPop 0.22s ease-out;
+      }
+
+      .oriex-attendance-modal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 18px 18px 10px;
+      }
+
+      .oriex-attendance-modal-title {
+        min-width: 0;
+      }
+
+      .oriex-attendance-modal-title b {
+        display: block;
+        font-size: 19px;
+        line-height: 1.2;
+        font-weight: 900;
+      }
+
+      .oriex-attendance-modal-title small {
+        display: block;
+        margin-top: 4px;
+        color: rgba(43, 39, 36, 0.48);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .oriex-attendance-month-controls {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: none;
+      }
+
+      .oriex-attendance-month-controls button,
+      .oriex-attendance-close {
+        border: 0;
+        border-radius: 12px;
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        background: #fff1ec;
+        color: #ff7054;
+        font-size: 20px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .oriex-attendance-summary {
+        margin: 0 18px 12px;
+        border-radius: 18px;
+        padding: 12px 14px;
+        background: linear-gradient(135deg, #ff7054, #ff9a7f);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .oriex-attendance-summary b {
+        font-size: 24px;
+        line-height: 1;
+        font-weight: 900;
+      }
+
+      .oriex-attendance-summary span {
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .oriex-attendance-week,
+      .oriex-attendance-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 6px;
+        padding: 0 18px;
+      }
+
+      .oriex-attendance-week {
+        margin-bottom: 7px;
+      }
+
+      .oriex-attendance-week span {
+        text-align: center;
+        color: rgba(43, 39, 36, 0.38);
+        font-size: 10px;
+        font-weight: 900;
+      }
+
+      .oriex-attendance-grid {
+        padding-bottom: 18px;
+      }
+
+      .oriex-attendance-day {
+        aspect-ratio: 1;
+        border-radius: 14px;
+        background: #fbf8f3;
+        border: 1px solid rgba(43, 39, 36, 0.06);
+        display: grid;
+        place-items: center;
+        position: relative;
+        color: rgba(43, 39, 36, 0.74);
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .oriex-attendance-day.is-empty {
+        background: transparent;
+        border-color: transparent;
+      }
+
+      .oriex-attendance-day.is-today {
+        outline: 2px solid rgba(255, 112, 84, 0.42);
+        background: #fff7f3;
+      }
+
+      .oriex-attendance-day.is-stamped {
+        color: #ff7054;
+        background: #fff1ec;
+      }
+
+      .oriex-attendance-mark {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-size: 23px;
+        transform: rotate(-10deg);
+      }
+
+      .oriex-attendance-day.is-boom .oriex-attendance-mark {
+        animation: oriexStampBoom 0.42s cubic-bezier(0.2, 1.55, 0.4, 1);
+      }
+
+      @keyframes oriexStampPop {
+        from { opacity: 0; transform: translateY(18px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      @keyframes oriexStampBoom {
+        0% { opacity: 0; transform: scale(2.1) rotate(-18deg); }
+        62% { opacity: 1; transform: scale(0.82) rotate(-10deg); }
+        100% { opacity: 1; transform: scale(1) rotate(-10deg); }
+      }
+    </style>
+    <script id="oriex6-attendance-stamp-script">
+      (() => {
+        const STORAGE_KEY = "oriex6_attendance_stamps_v1";
+        const VIEW_KEY = "oriex6_attendance_view_month_v1";
+        const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+
+        const pad = value => String(value).padStart(2, "0");
+        const keyOf = date => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+        const monthKeyOf = date => `${date.getFullYear()}-${pad(date.getMonth() + 1)}`;
+        const todayKey = () => keyOf(new Date());
+        const load = () => {
+          try {
+            const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+            return parsed && typeof parsed === "object" ? parsed : {};
+          } catch {
+            return {};
+          }
+        };
+        const save = stamps => localStorage.setItem(STORAGE_KEY, JSON.stringify(stamps));
+        const markToday = () => {
+          const stamps = load();
+          stamps[todayKey()] = true;
+          save(stamps);
+          return stamps;
+        };
+        const readViewMonth = () => {
+          const raw = localStorage.getItem(VIEW_KEY);
+          if (/^\d{4}-\d{2}$/.test(raw || "")) {
+            const [year, month] = raw.split("-").map(Number);
+            return new Date(year, month - 1, 1);
+          }
+          const now = new Date();
+          return new Date(now.getFullYear(), now.getMonth(), 1);
+        };
+        const writeViewMonth = date => localStorage.setItem(VIEW_KEY, monthKeyOf(date));
+        const countMonth = (stamps, date) => {
+          const prefix = monthKeyOf(date) + "-";
+          return Object.keys(stamps).filter(key => key.startsWith(prefix)).length;
+        };
+
+        function openCalendar({ stamp = true } = {}) {
+          const stamps = stamp ? markToday() : load();
+          let viewMonth = readViewMonth();
+          const now = new Date();
+          const today = todayKey();
+          const backdrop = document.createElement("div");
+          backdrop.className = "oriex-attendance-modal-backdrop";
+          backdrop.addEventListener("click", event => {
+            if (event.target === backdrop) backdrop.remove();
+          });
+
+          const modal = document.createElement("section");
+          modal.className = "oriex-attendance-modal";
+          modal.setAttribute("role", "dialog");
+          modal.setAttribute("aria-modal", "true");
+          backdrop.appendChild(modal);
+          document.body.appendChild(backdrop);
+
+          const render = () => {
+            writeViewMonth(viewMonth);
+            const year = viewMonth.getFullYear();
+            const month = viewMonth.getMonth();
+            const first = new Date(year, month, 1);
+            const days = new Date(year, month + 1, 0).getDate();
+            const blanks = first.getDay();
+            const monthLabel = `${year}年${month + 1}月`;
+            const stampedCount = countMonth(stamps, viewMonth);
+            const cells = [];
+
+            for (let i = 0; i < blanks; i++) {
+              cells.push(`<div class="oriex-attendance-day is-empty"></div>`);
+            }
+            for (let day = 1; day <= days; day++) {
+              const key = `${year}-${pad(month + 1)}-${pad(day)}`;
+              const stamped = !!stamps[key];
+              const isToday = key === today;
+              const boom = isToday && stamped && stamp;
+              cells.push(`
+                <div class="oriex-attendance-day${stamped ? " is-stamped" : ""}${isToday ? " is-today" : ""}${boom ? " is-boom" : ""}">
+                  <span>${day}</span>
+                  ${stamped ? `<span class="oriex-attendance-mark">💮</span>` : ""}
+                </div>
+              `);
+            }
+
+            modal.innerHTML = `
+              <div class="oriex-attendance-modal-head">
+                <div class="oriex-attendance-modal-title">
+                  <b>${monthLabel}</b>
+                  <small>校舎に来た日をローカルに記録</small>
+                </div>
+                <div class="oriex-attendance-month-controls">
+                  <button type="button" data-oriex-prev aria-label="前の月">‹</button>
+                  <button type="button" data-oriex-next aria-label="次の月">›</button>
+                  <button type="button" class="oriex-attendance-close" data-oriex-close aria-label="閉じる">×</button>
+                </div>
+              </div>
+              <div class="oriex-attendance-summary">
+                <span>今月のスタンプ</span>
+                <b>${stampedCount}</b>
+              </div>
+              <div class="oriex-attendance-week">
+                ${weekdays.map(day => `<span>${day}</span>`).join("")}
+              </div>
+              <div class="oriex-attendance-grid">${cells.join("")}</div>
+            `;
+
+            modal.querySelector("[data-oriex-prev]").addEventListener("click", () => {
+              viewMonth = new Date(year, month - 1, 1);
+              stamp = false;
+              render();
+            });
+            modal.querySelector("[data-oriex-next]").addEventListener("click", () => {
+              viewMonth = new Date(year, month + 1, 1);
+              stamp = false;
+              render();
+            });
+            modal.querySelector("[data-oriex-close]").addEventListener("click", () => backdrop.remove());
+          };
+
+          render();
+        }
+
+        function homeSummary() {
+          const count = countMonth(load(), new Date());
+          return count > 0 ? `今月 ${count} 日スタンプ済み` : "1ヶ月の登校をカレンダーで見る";
+        }
+
+        function injectHomeButton() {
+          const home = document.querySelector(".rx-home");
+          if (!home || home.querySelector(".oriex-attendance-home-button")) return;
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "oriex-attendance-home-button";
+          button.innerHTML = `
+            <span class="oriex-left">
+              <span class="oriex-attendance-icon">💮</span>
+              <span>
+                <b>今日も来たよ！</b>
+                <small>${homeSummary()}</small>
+              </span>
+            </span>
+            <span class="oriex-attendance-chevron">›</span>
+          `;
+          button.addEventListener("click", () => openCalendar({ stamp: true }));
+          const anchor = home.querySelector(".rx-planbtn") || home.querySelector(".rx-cta") || home.firstElementChild;
+          if (anchor && anchor.nextSibling) anchor.parentNode.insertBefore(button, anchor.nextSibling);
+          else home.appendChild(button);
+        }
+
+        function injectRecordCard() {
+          const activeTab = document.querySelector(".rx-tabbar button.on");
+          const isRecord = !!activeTab && activeTab.textContent.includes("記録");
+          document.querySelectorAll(".oriex-attendance-record-card").forEach(card => {
+            if (!isRecord) card.remove();
+          });
+          if (!isRecord) return;
+          const main = document.querySelector("main");
+          if (!main || main.querySelector(".oriex-attendance-record-card")) return;
+          const card = document.createElement("button");
+          card.type = "button";
+          card.className = "oriex-attendance-record-card";
+          card.innerHTML = `
+            <span class="oriex-left">
+              <span class="oriex-attendance-icon">💮</span>
+              <span>
+                <b>登校スタンプ</b>
+                <small>${homeSummary()}</small>
+              </span>
+            </span>
+            <span class="oriex-attendance-chevron">›</span>
+          `;
+          card.addEventListener("click", () => openCalendar({ stamp: false }));
+          main.insertBefore(card, main.firstChild);
+        }
+
+        function refresh() {
+          injectHomeButton();
+          injectRecordCard();
+        }
+
+        const observer = new MutationObserver(refresh);
+        observer.observe(document.documentElement, { childList: true, subtree: true });
+        window.addEventListener("storage", refresh);
+        document.addEventListener("DOMContentLoaded", refresh);
+        setTimeout(refresh, 300);
+        setTimeout(refresh, 1200);
+      })();
+    </script>
   </body>
 </html>
