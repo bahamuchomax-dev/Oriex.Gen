@@ -1,17 +1,13 @@
 GitHub Pages アップロード手順
 
-1. このZIPを解凍します。
-2. GitHubリポジトリの中身を必要に応じて整理します。
-   ※ 同じ名前の index.html / 404.html は上書きされます。
-   ※ ただし、古い .env や assets フォルダは自動では消えません。不要ならGitHub上で削除してください。
-3. このフォルダ内の以下をアップロードします。
-   - index.html
-   - 404.html
-   - .nojekyll
-   - .gitignore
-4. Settings → Pages → Deploy from a branch → main / root に設定します。
+1. このZIPを解凍してください。
+2. GitHubのリポジトリを開きます。
+3. 古い .env / assets / src / package.json など、公開に不要なファイルが残っていたら削除してください。
+4. このフォルダ内の index.html / 404.html / .nojekyll / .gitignore をアップロードしてください。
+5. Settings → Pages → Deploy from a branch → main / root に設定してください。
 
-安全化内容:
-- .env は含めていません。
-- assets フォルダなしで動くように、CSS/JSを index.html にまとめています。
-- Firebase Web公開設定はビルド済みJSに含まれるため、Firebase Rulesを適切に設定してください。
+注意
+- ZIPファイルそのものではなく、解凍した中身をアップロードしてください。
+- .env は入れていません。
+- assets フォルダも不要です。
+- 同じ名前の index.html / 404.html は上書きされますが、ZIPに入っていない古いファイルは自動では消えません。
