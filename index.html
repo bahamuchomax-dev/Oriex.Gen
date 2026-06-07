@@ -594,58 +594,92 @@ Total Duration: ${c-l}ms`),H.resolve({didRun:!0,sequenceNumbersCollected:r,targe
         62% { opacity: 1; transform: scale(0.82) rotate(-10deg); }
         100% { opacity: 1; transform: scale(1) rotate(-10deg); }
       }
+    
+      /* --- oriex6 refresh: nicer plan + attendance cards, tap stamps, hide home all-features --- */
+      .rx-planbtn {
+        border-radius: 22px !important;
+        border: 1px solid rgba(255, 112, 84, 0.16) !important;
+        background: linear-gradient(135deg, #ffffff, #fff7f3) !important;
+        box-shadow: 0 12px 28px rgba(43, 39, 36, 0.08) !important;
+        padding: 16px !important;
+      }
+      .rx-planbtn .ic {
+        background: linear-gradient(135deg, #ff7a59, #ff9d80) !important;
+        color: #fff !important;
+        border-radius: 15px !important;
+        box-shadow: 0 8px 16px rgba(255, 112, 84, 0.28) !important;
+      }
+      .rx-planbtn.ghost {
+        background: rgba(255, 255, 255, 0.72) !important;
+        box-shadow: 0 8px 20px rgba(43, 39, 36, 0.05) !important;
+      }
+      .rx-planbtn.ghost .ic {
+        background: #fff1ec !important;
+        color: #ff7054 !important;
+        box-shadow: none !important;
+      }
+      .oriex-attendance-home-button,
+      .oriex-attendance-record-card {
+        border: 1px solid rgba(255, 112, 84, 0.16) !important;
+        background: linear-gradient(135deg, #ffffff, #fff7f3) !important;
+        box-shadow: 0 12px 28px rgba(43, 39, 36, 0.08) !important;
+        border-radius: 22px !important;
+        padding: 16px !important;
+        transition: transform 0.12s ease;
+      }
+      .oriex-attendance-home-button:active,
+      .oriex-attendance-record-card:active { transform: scale(0.985); }
+      .oriex-attendance-icon {
+        width: 46px !important;
+        height: 46px !important;
+        border-radius: 15px !important;
+        background: linear-gradient(135deg, #ffd9cc, #ffeae1) !important;
+        box-shadow: inset 0 0 0 1px rgba(255, 112, 84, 0.12);
+        font-size: 24px !important;
+      }
+      .oriex-attendance-day { cursor: pointer; transition: transform 0.1s ease, background 0.15s ease; -webkit-tap-highlight-color: transparent; }
+      .oriex-attendance-day:not(.is-empty):active { transform: scale(0.9); }
+      .oriex-attendance-day:not(.is-empty):not(.is-stamped):hover { background: #fff3ee; }
+      .oriex-attendance-hint {
+        text-align: center;
+        color: rgba(43, 39, 36, 0.42);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 18px 16px;
+      }
+      .rx-home:has(.rx-cta) .rx-menu { display: none !important; }
     </style>
     <script id="oriex6-attendance-stamp-script">
       (() => {
         const STORAGE_KEY = "oriex6_attendance_stamps_v1";
         const VIEW_KEY = "oriex6_attendance_view_month_v1";
         const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
-
-        const pad = value => String(value).padStart(2, "0");
-        const keyOf = date => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-        const monthKeyOf = date => `${date.getFullYear()}-${pad(date.getMonth() + 1)}`;
+        const pad = v => String(v).padStart(2, "0");
+        const keyOf = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+        const monthKeyOf = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}`;
         const todayKey = () => keyOf(new Date());
-        const load = () => {
-          try {
-            const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-            return parsed && typeof parsed === "object" ? parsed : {};
-          } catch {
-            return {};
-          }
-        };
-        const save = stamps => localStorage.setItem(STORAGE_KEY, JSON.stringify(stamps));
-        const markToday = () => {
-          const stamps = load();
-          stamps[todayKey()] = true;
-          save(stamps);
-          return stamps;
-        };
-        const readViewMonth = () => {
-          const raw = localStorage.getItem(VIEW_KEY);
-          if (/^\d{4}-\d{2}$/.test(raw || "")) {
-            const [year, month] = raw.split("-").map(Number);
-            return new Date(year, month - 1, 1);
-          }
-          const now = new Date();
-          return new Date(now.getFullYear(), now.getMonth(), 1);
-        };
-        const writeViewMonth = date => localStorage.setItem(VIEW_KEY, monthKeyOf(date));
-        const countMonth = (stamps, date) => {
-          const prefix = monthKeyOf(date) + "-";
-          return Object.keys(stamps).filter(key => key.startsWith(prefix)).length;
-        };
+        const load = () => { try { const p = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); return p && typeof p === "object" ? p : {}; } catch { return {}; } };
+        const save = s => localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+        const readViewMonth = () => { const raw = localStorage.getItem(VIEW_KEY); if (/^\d{4}-\d{2}$/.test(raw || "")) { const [y, m] = raw.split("-").map(Number); return new Date(y, m - 1, 1); } const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), 1); };
+        const writeViewMonth = d => localStorage.setItem(VIEW_KEY, monthKeyOf(d));
+        const countMonth = (s, d) => { const p = monthKeyOf(d) + "-"; return Object.keys(s).filter(k => k.startsWith(p) && s[k]).length; };
 
-        function openCalendar({ stamp = true } = {}) {
-          const stamps = stamp ? markToday() : load();
+        function homeSummary() {
+          const c = countMonth(load(), new Date());
+          return c > 0 ? `今月 ${c} 日スタンプ` : "カレンダーをタップして記録";
+        }
+        function updateSummaries() {
+          document.querySelectorAll(".oriex-attendance-home-button small, .oriex-attendance-record-card small").forEach(el => { el.textContent = homeSummary(); });
+        }
+
+        function openCalendar() {
+          const stamps = load();
           let viewMonth = readViewMonth();
-          const now = new Date();
           const today = todayKey();
+          let justKey = null;
           const backdrop = document.createElement("div");
           backdrop.className = "oriex-attendance-modal-backdrop";
-          backdrop.addEventListener("click", event => {
-            if (event.target === backdrop) backdrop.remove();
-          });
-
+          backdrop.addEventListener("click", e => { if (e.target === backdrop) backdrop.remove(); });
           const modal = document.createElement("section");
           modal.className = "oriex-attendance-modal";
           modal.setAttribute("role", "dialog");
@@ -663,28 +697,20 @@ Total Duration: ${c-l}ms`),H.resolve({didRun:!0,sequenceNumbersCollected:r,targe
             const monthLabel = `${year}年${month + 1}月`;
             const stampedCount = countMonth(stamps, viewMonth);
             const cells = [];
-
-            for (let i = 0; i < blanks; i++) {
-              cells.push(`<div class="oriex-attendance-day is-empty"></div>`);
-            }
+            for (let i = 0; i < blanks; i++) cells.push(`<div class="oriex-attendance-day is-empty"></div>`);
             for (let day = 1; day <= days; day++) {
               const key = `${year}-${pad(month + 1)}-${pad(day)}`;
               const stamped = !!stamps[key];
               const isToday = key === today;
-              const boom = isToday && stamped && stamp;
-              cells.push(`
-                <div class="oriex-attendance-day${stamped ? " is-stamped" : ""}${isToday ? " is-today" : ""}${boom ? " is-boom" : ""}">
-                  <span>${day}</span>
-                  ${stamped ? `<span class="oriex-attendance-mark">💮</span>` : ""}
-                </div>
-              `);
+              const boom = key === justKey && stamped;
+              cells.push(`<div class="oriex-attendance-day${stamped ? " is-stamped" : ""}${isToday ? " is-today" : ""}${boom ? " is-boom" : ""}" data-oriex-key="${key}" role="button" tabindex="0"><span>${day}</span>${stamped ? `<span class="oriex-attendance-mark">💮</span>` : ""}</div>`);
             }
-
+            justKey = null;
             modal.innerHTML = `
               <div class="oriex-attendance-modal-head">
                 <div class="oriex-attendance-modal-title">
                   <b>${monthLabel}</b>
-                  <small>校舎に来た日をローカルに記録</small>
+                  <small>日付をタップしてスタンプ</small>
                 </div>
                 <div class="oriex-attendance-month-controls">
                   <button type="button" data-oriex-prev aria-label="前の月">‹</button>
@@ -696,84 +722,60 @@ Total Duration: ${c-l}ms`),H.resolve({didRun:!0,sequenceNumbersCollected:r,targe
                 <span>今月のスタンプ</span>
                 <b>${stampedCount}</b>
               </div>
-              <div class="oriex-attendance-week">
-                ${weekdays.map(day => `<span>${day}</span>`).join("")}
-              </div>
+              <div class="oriex-attendance-week">${weekdays.map(d => `<span>${d}</span>`).join("")}</div>
               <div class="oriex-attendance-grid">${cells.join("")}</div>
+              <div class="oriex-attendance-hint">タップでスタンプ / もう一度タップで取り消し</div>
             `;
-
-            modal.querySelector("[data-oriex-prev]").addEventListener("click", () => {
-              viewMonth = new Date(year, month - 1, 1);
-              stamp = false;
-              render();
-            });
-            modal.querySelector("[data-oriex-next]").addEventListener("click", () => {
-              viewMonth = new Date(year, month + 1, 1);
-              stamp = false;
-              render();
-            });
+            modal.querySelector("[data-oriex-prev]").addEventListener("click", () => { viewMonth = new Date(year, month - 1, 1); render(); });
+            modal.querySelector("[data-oriex-next]").addEventListener("click", () => { viewMonth = new Date(year, month + 1, 1); render(); });
             modal.querySelector("[data-oriex-close]").addEventListener("click", () => backdrop.remove());
+            modal.querySelectorAll(".oriex-attendance-day[data-oriex-key]").forEach(cell => {
+              const toggle = () => {
+                const key = cell.getAttribute("data-oriex-key");
+                if (!key) return;
+                if (stamps[key]) { delete stamps[key]; } else { stamps[key] = true; justKey = key; }
+                save(stamps);
+                render();
+                updateSummaries();
+              };
+              cell.addEventListener("click", toggle);
+              cell.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
+            });
           };
-
           render();
         }
 
-        function homeSummary() {
-          const count = countMonth(load(), new Date());
-          return count > 0 ? `今月 ${count} 日スタンプ済み` : "1ヶ月の登校をカレンダーで見る";
-        }
-
-        function injectHomeButton() {
-          const home = document.querySelector(".rx-home");
-          if (!home || home.querySelector(".oriex-attendance-home-button")) return;
+        function injectHomeButton(home) {
+          if (home.querySelector(".oriex-attendance-home-button")) return;
           const button = document.createElement("button");
           button.type = "button";
           button.className = "oriex-attendance-home-button";
-          button.innerHTML = `
-            <span class="oriex-left">
-              <span class="oriex-attendance-icon">💮</span>
-              <span>
-                <b>今日も来たよ！</b>
-                <small>${homeSummary()}</small>
-              </span>
-            </span>
-            <span class="oriex-attendance-chevron">›</span>
-          `;
-          button.addEventListener("click", () => openCalendar({ stamp: true }));
+          button.innerHTML = `<span class="oriex-left"><span class="oriex-attendance-icon">💮</span><span><b>今日も来たよ！</b><small>${homeSummary()}</small></span></span><span class="oriex-attendance-chevron">›</span>`;
+          button.addEventListener("click", openCalendar);
           const anchor = home.querySelector(".rx-planbtn") || home.querySelector(".rx-cta") || home.firstElementChild;
           if (anchor && anchor.nextSibling) anchor.parentNode.insertBefore(button, anchor.nextSibling);
           else home.appendChild(button);
         }
 
-        function injectRecordCard() {
-          const activeTab = document.querySelector(".rx-tabbar button.on");
-          const isRecord = !!activeTab && activeTab.textContent.includes("記録");
-          document.querySelectorAll(".oriex-attendance-record-card").forEach(card => {
-            if (!isRecord) card.remove();
-          });
-          if (!isRecord) return;
-          const main = document.querySelector("main");
-          if (!main || main.querySelector(".oriex-attendance-record-card")) return;
+        function injectRecordCard(home) {
+          if (home.querySelector(".oriex-attendance-record-card")) return;
           const card = document.createElement("button");
           card.type = "button";
           card.className = "oriex-attendance-record-card";
-          card.innerHTML = `
-            <span class="oriex-left">
-              <span class="oriex-attendance-icon">💮</span>
-              <span>
-                <b>登校スタンプ</b>
-                <small>${homeSummary()}</small>
-              </span>
-            </span>
-            <span class="oriex-attendance-chevron">›</span>
-          `;
-          card.addEventListener("click", () => openCalendar({ stamp: false }));
-          main.insertBefore(card, main.firstChild);
+          card.innerHTML = `<span class="oriex-left"><span class="oriex-attendance-icon">💮</span><span><b>登校スタンプ</b><small>${homeSummary()}</small></span></span><span class="oriex-attendance-chevron">›</span>`;
+          card.addEventListener("click", openCalendar);
+          const recs = home.querySelector(".rx-recs");
+          const topbar = home.querySelector(".rx-topbar");
+          if (recs) recs.parentNode.insertBefore(card, recs);
+          else if (topbar && topbar.nextSibling) topbar.parentNode.insertBefore(card, topbar.nextSibling);
+          else home.appendChild(card);
         }
 
         function refresh() {
-          injectHomeButton();
-          injectRecordCard();
+          const home = document.querySelector(".rx-home");
+          if (!home) return;
+          if (home.querySelector(".rx-cta")) injectHomeButton(home);
+          else if (home.querySelector(".rx-recs")) injectRecordCard(home);
         }
 
         const observer = new MutationObserver(refresh);
